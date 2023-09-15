@@ -86,6 +86,37 @@ vector <int> getLCParray (const string &s, const vector <int> &SA) {
   lcp[n - 1] = 0; return lcp;
 }
 
+const int MX = 1e6+7, K = 20;
+int lg[MX];
+
+void pre()
+{
+    lg[1] = 0;
+    for (int i=2; i<MX; i++)
+        lg[i] = lg[i/2]+1;
+}
+
+struct RMQ{
+    int N;
+    VI v[K];
+    RMQ(const VI &a) {
+        N = a.size();
+        v[0] = a;
+
+        for (int k = 0; (1<<(k+1)) <= N; k++) {
+            v[k+1].resize(N);
+            for (int i = 0; i-1+(1<<(k+1)) < N; i++) {
+                v[k+1][i] = min(v[k][i], v[k][i+(1<<k)]);
+            }
+        }
+    }
+
+    int findMin(int i, int j) {
+        int k = lg[j-i+1];
+        return min(v[k][i], v[k][j+1-(1<<k)]);
+    }
+};
+
 int main() {
   string s; cin >> s;
   for (const int i : getSuffixArray(s)) printf("%d ", i);
