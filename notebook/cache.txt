@@ -1,5 +1,5 @@
-IUT Brogrammers
+IUT O(n!)
 IUT
 3
-landscape
+portrait
 12

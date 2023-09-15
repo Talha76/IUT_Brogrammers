@@ -59,4 +59,3 @@ struct chash {
 };
 typedef gp_hash_table<int, int, chash> gp;
 gp table;
-
