@@ -1,23 +1,10 @@
-mp["01"] = 1;
-ind = 1;
-int dfs(int u, int p) {
-  int cnt = 0;
-  vector<int> vs;
-  for (auto v : g1[u]) {
-    if (v != p) {
-      int got = dfs(v, u);
-      vs.pb(got);
-      cnt++;
-    }
-  }
-  if (!cnt) return 1;
-
-  sort(vs.begin(), vs.end());
-  string s = "0";
-  for (auto i : vs) s += to_string(i);
-  vs.clear();
-  s.pb('1');
-  if (mp.find(s) == mp.end()) mp[s] = ++ind;
-  int ret = mp[s];
-  return ret;
+LL Hash(int u, int p) {
+  vector<LL> childrenHash;
+  for (auto v : adj[u]) if (v != p)
+    childrenHash.add(Hash(v, u));
+  sort(all(childrenHash));
+  LL nodeHash = 0;
+  for (int i = 0; i < childrenHash.size(); i++)
+    nodeHash = (nodeHash + childrenHash[i] * bigmod(SEED, i, MOD)) % MOD;
+  return nodeHash;
 }
