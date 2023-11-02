@@ -41,9 +41,9 @@ void debug_out(string s, T t, V... v) {
     if(sizeof...(v)) debug_out(s, v...);
 }
 
-#define debug(x...) cerr << "LINE: " << __LINE__ << endl; debug_out(#x, x); cerr << endl;
+#define dbg(x...) cerr << "LINE: " << __LINE__ << endl; debug_out(#x, x); cerr << endl;
 #else
-#define debug(x...)
+#define dbg(x...)
 #endif
 
 const int RANDOM = chrono::high_resolution_clock::now().time_since_epoch().count();
