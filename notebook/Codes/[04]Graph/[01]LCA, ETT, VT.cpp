@@ -1,40 +1,35 @@
-struct lca_table {
-  tree &T;
-  int n, LOG = 20;
-  vector<vector<int>> anc;
-  vector<int> level;
-
-  void setupLifting(int node, int par) {
-    for (int v : T[node])
-      if (v != par) {
-        anc[v][0] = node, level[v] = level[node] + 1;
-        for (int k = 1; k < LOG; k++) anc[v][k] = anc[anc[v][k - 1]][k - 1];
-        setupLifting(v, node);
-      }
+#define lg(n) (31 - __builtin_clz(n))
+const int N = 1e5 + 1;
+const int K = lg(N) + 1;
+vector<int> adj[N];
+int anc[N][K], lvl[N];
+namespace lca {
+  void init(int u = 1, int p = 0, int d = 0) {
+    lvl[u] = d;
+    anc[u][0] = p;
+    for (int i = 1; i < K; i++)
+      anc[u][i] = anc[anc[u][i - 1]][i - 1];
+    for (auto v : adj[u])
+      if (v != p)
+        init(v, u, d + 1);
   }
-  lca_table(tree &T, int root = 0) : T(T), n(T.n) {
-    LOG = 33 - __builtin_clz(n);
-    anc.assign(n, vector<int>(LOG, root));
-    level.resize(n);
-    setupLifting(root, root);
+  int getAnc(int u, int k) {
+    for (int i = 0; u and i < K; i++)
+      if ((k >> i) & 1)
+        u = anc[u][i];
+    return u;
   }
   int lca(int u, int v) {
-    if (level[u] > level[v]) swap(u, v);
-    for (int k = LOG - 1; ~k; k--)
-      if (level[u] + (1 << k) <= level[v]) v = anc[v][k];
+    if (lvl[u] < lvl[v]) swap(u, v);
+    u = getAnc(u, lvl[u] - lvl[v]);
     if (u == v) return u;
-    for (int k = LOG - 1; ~k; k--)
-      if (anc[u][k] != anc[v][k]) u = anc[u][k], v = anc[v][k];
+    for (int i = K - 1; ~i; i--)
+      if (anc[u][i] != anc[v][i])
+        u = anc[u][i], v = anc[v][i];
     return anc[u][0];
   }
-  int getAncestor(int node, int ht) {
-    for (int k = 0; k < LOG; k++)
-      if (ht & (1 << k)) node = anc[node][k];
-    return node;
-  }
-  int distance(int u, int v) {
-    int g = lca(u, v);
-    return level[u] + level[v] - 2 * level[g];
+  int dist(int u, int v) {
+    return lvl[u] + lvl[v] - 2 * lvl[lca(u, v)];
   }
 };
 struct euler_tour {
