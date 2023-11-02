@@ -1,5 +1,5 @@
-IUT Brogrammers
+IUT Oikotaan
 IUT
 3
-landscape
+portrait
 12
