@@ -78,12 +78,8 @@ set showcmd
 set wildmenu
 
 
-if !has('nvim')
-  set clipboard=unnamedplus
-endif
-if !has('nvim')
-  set ttymouse=xterm2
-endif
+set clipboard=unnamedplus
+set ttymouse=xterm2
 
 nnoremap <S-j> :m .+1<CR>==
 nnoremap <S-k> :m .-2<CR>==
