@@ -1,12 +1,3 @@
-#include <bits/stdc++.h>
-
-using namespace std;
-
-/*
-  O(|S| + |alphabet|) Suffix Array
-  LIM := max{s[i]} + 2
-*/
-
 void inducedSort (const vector <int> &vec, int val_range, vector <int> &SA, const vector <int> &sl, const vector <int> &lms_idx) {
   vector <int> l(val_range, 0), r(val_range, 0);
   for (int c : vec) {

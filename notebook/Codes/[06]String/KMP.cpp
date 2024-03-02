@@ -5,8 +5,7 @@ vector<int> prefix_function(string s) {
     int j = pi[i-1];
     while (j > 0 && s[i] != s[j])
       j = pi[j-1];
-    if (s[i] == s[j])
-      j++;
+    j += s[i] == s[j];
     pi[i] = j;
   }
   return pi;

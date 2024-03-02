@@ -1,61 +1,63 @@
-const int N = 1000006;
+namespace segtree {
+  const int N = 1000006;
 
-using DT = LL;
-using LT = LL;
-constexpr DT I = 0;
-constexpr LT None = 0;
-DT val[4 * N];
-LT lazy[4 * N];
-int L, R;
+  using DT = long long;
+  using LT = long long;
+  constexpr DT I = 0; 
+  constexpr LT None = 0;
 
-void pull(int s, int e, int node) {
-  val[node] = val[node << 1] + val[node << 1 | 1];
-}
-void apply(const LT &U, int s, int e, int node) {
-  val[node] += (e - s + 1) * U;
-  lazy[node] += U;
-}
-void reset(int node) { lazy[node] = None; }
-DT merge(const DT &a, const DT &b) { return a + b; }
-DT get(int s, int e, int node) { return val[node]; }
-void push(int s, int e, int node) {
-  if (s == e) return;
-  apply(lazy[node], s, s + e >> 1, node << 1);
-  apply(lazy[node], s + e + 2 >> 1, e, node << 1 | 1);
-  reset(node);
-}
-void build(int s, int e, vector<DT> &v, int node = 1) {
-  int m = s + e >> 1;
-  if (s == e) {
-    val[node] = v[s];
-    return;
+  DT val[N<<2];
+  LT lz[N<<2];
+  int L, R;
+  void apply(int u, const LT &U, int l, int r) {
+    if (U != None) val[u] += (r - l + 1) * U;
+    lz[u] += U;
   }
-  build(s, m, v, node * 2);
-  build(m + 1, e, v, node * 2 + 1);
-  pull(s, e, node);
-}
-void update(int S, int E, LT uval, int s = L, int e = R, int node = 1) {
-  if (S > E) return;
-  if (S == s and E == e) {
-    apply(uval, s, e, node);
-    return;
+  DT merge(const DT &a, const DT &b, int l, int r) {
+    return a + b;
   }
-  push(s, e, node);
-  int m = s + e >> 1;
-  update(S, min(m, E), uval, s, m, node * 2);
-  update(max(S, m + 1), E, uval, m + 1, e, node * 2 + 1);
-  pull(s, e, node);
-}
-DT query(int S, int E, int s = L, int e = R, int node = 1) {
-  if (S > E) return I;
-  if (s == S and e == E) return get(s, e, node);
-  push(s, e, node);
-  int m = s + e >> 1;
-  DT L = query(S, min(m, E), s, m, node * 2);
-  DT R = query(max(S, m + 1), E, m + 1, e, node * 2 + 1);
-  return merge(L, R);
-}
-void init(int _L, int _R, vector<DT> &v) {
-  L = _L, R = _R;
-  build(L, R, v);
-}
+  /* -- Do Not Touch Anything Below This -- */
+
+  void push(int l, int r, int u) {
+    if(l == r) return;
+    apply(u << 1, lz[u], l, (l + r) >> 1);
+    apply(u << 1 | 1, lz[u], (l + r + 2) >> 1, r);
+    lz[u] = None;
+  }
+  void build(int l, int r, vector <DT> const &v, int u = 1 ) {
+    lz[u] = None;
+    if(l == r) {
+      val[u] = v[l];
+      return;
+    }
+    int m = (l + r) >> 1, lft = u << 1, ryt = lft | 1;
+    build(l, m, v, lft);
+    build(m + 1, r, v, ryt);
+    val[u] = merge(val[lft], val[ryt], l, r);
+  }
+  void update(int ql,int qr, LT uval, int l = L, int r = R, int u = 1) {
+    if (qr < l or ql > r) return;
+    if(ql <= l and r <= qr) {
+      apply(u, uval, l, r);
+      return;
+    }
+    push(l, r, u);
+    int m = (l + r) >> 1, lft = u << 1, ryt = lft | 1;
+    update(ql, qr, uval,  l,  m, lft);
+    update(ql, qr, uval, m + 1, r, ryt);
+    val[u] = merge(val[lft], val[ryt], l, r);
+  }
+  DT query(int ql, int qr, int l = L, int r = R, int u = 1) {
+    if (qr < l or ql > r) return I;
+    if (ql <= l and r <= qr) return val[u];
+    push(l, r, u);
+    int m = (l + r) >> 1, lft = u << 1, ryt = lft | 1;
+    DT ansl = query(ql, qr, l, m, lft);
+    DT ansr = query(ql, qr, m + 1, r, ryt);
+    return merge(ansl, ansr, l, r);
+  }
+  void init(int _L, int _R, vector <DT> v) {
+    L = _L, R = _R;
+    build(L, R, v);
+  }
+};

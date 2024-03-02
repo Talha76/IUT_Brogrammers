@@ -1,11 +1,18 @@
-// define +, -, * for (PLL, LL) and (PLL, PLL), % for (PLL, PLL);
+/*
+ * Some well known primes:
+ *   1949313259, 1997293877, 2091573227, 2117566807
+ * Some Primes:
+ *   1000000007, 1000000009, 1000000861, 1000099999      ( < 2^30 )
+ *   1088888881, 1111211111, 1500000001, 1481481481      ( < 2^31 )
+ *   2147483647 (2^31-1),
+ */
 PLL base(1949313259, 1997293877);
 namespace Hashing {
     using LL = long long;
     using PLL = pair<LL,LL>;
     #define ff first
     #define ss second
-    const PLL M = {2091573227, 2117566807};        ///Should be large primes
+    const PLL M = {1e9+7, 1e9+9};        ///Should be large primes
     const LL base = 1259;                ///Should be larger than alphabet size
     const int N = 1e6+7;                 ///Highest length of string
     PLL operator+ (const PLL& a, LL x)     {return {a.ff + x, a.ss + x};}

@@ -1,4 +1,3 @@
-
 const int sg = 26, N = 1e3 + 9;
 struct aho_corasick {
   struct node {
