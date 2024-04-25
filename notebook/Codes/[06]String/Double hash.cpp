@@ -13,7 +13,7 @@ namespace Hashing {
     #define ff first
     #define ss second
     const PLL M = {1e9+7, 1e9+9};        ///Should be large primes
-    const LL base = 1259;                ///Should be larger than alphabet size
+    const PLL base = {1259, 367};                ///Should be larger than alphabet size
     const int N = 1e6+7;                 ///Highest length of string
     PLL operator+ (const PLL& a, LL x)     {return {a.ff + x, a.ss + x};}
     PLL operator- (const PLL& a, LL x)     {return {a.ff - x, a.ss - x};}
