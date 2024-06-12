@@ -10,7 +10,8 @@ void pull(int s, int e, int u) {
   val[u] = val[u << 1] + val[u << 1 | 1];
 }
 void apply(const LT &uval, int s, int e, int u) {
-  if (uval != None) val[u] += (e - s + 1) * uval;
+  if (uval == None) return;
+  val[u] += (e - s + 1) * uval;
   lazy[u] += uval;
 }
 void reset(int u) { lazy[u] = None; }
@@ -23,11 +24,12 @@ void push(int s, int e, int u) {
   reset(u);
 }
 void build(int s, int e, vector<DT> &v, int u = 1) {
-  int m = s + e >> 1;
+  reset(u);
   if (s == e) {
     val[u] = v[s];
     return;
   }
+  int m = s + e >> 1;
   build(s, m, v, u<<1);
   build(m + 1, e, v, u<<1|1);
   pull(s, e, u);
