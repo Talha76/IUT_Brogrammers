@@ -60,7 +60,7 @@ struct chash {
 typedef gp_hash_table<int, int, chash> gp;
 gp table;
 
-mt19937_64 rng(atoi(argv[1]));
+mt19937_64 rng(RANDOM);
   
 long long random(long long l, long long r) {
     uniform_int_distribution<long long> dist(l, r);

@@ -1,43 +1,34 @@
-vector<vector<int>> components;
-vector<int> depth, low;
-stack<int> st;
-vector<int> id;
-vector<edge> bridges;
-graph tree;
-void find_bridges(int node, graph &G, int par = -1, int d = 0) {
-  low[node] = depth[node] = d;
-  st.push(node);
-  for (int id : G[node]) {
-    int to = G(id).to(node);
-    if (par != to) {
-      if (depth[to] == -1) {
-        find_bridges(to, G, node, d + 1);
-        if (low[to] > depth[node]) {
-          bridges.emplace_back(node, to);
-          components.push_back({});
-          for (int x = -1; x != to; x = st.top(), st.pop())
-            components.back().push_back(st.top());
+const int N = 1e5 + 1;
+vector<int> g[N], tree[N];
+int in[N], low[N], ptr, compId[N];
+void go(int u, int p = -1) {
+    in[u] = low[u] = ++ptr;
+    for (int v: g[u]) {
+        if (in[v]) {
+            if (v == p) p = -1;
+            else low[u] = min(low[u], in[v]);
+        } else {
+            go(v, u);
+            low[u] = min(low[u], low[v]);
         }
-      }
-      low[node] = min(low[node], low[to]);
     }
-  }
-  if (par == -1) {
-    components.push_back({});
-    while (!st.empty()) components.back().push_back(st.top()), st.pop();
-  }
 }
-graph &create_tree() {
-  for (auto &comp : components) {
-    int idx = tree.addNode();
-    for (auto &e : comp) id[e] = idx;
-  }
-  for (auto &[l, r] : bridges) tree.addEdge(id[l], id[r]);
-  return tree;
+void shrink(int u, int id) {
+    compId[u] = id;
+    for (int v: g[u]) if (not compId[v]) {
+        if (low[v] > in[u]) {
+            tree[id].emplace_back(++ptr);
+            tree[ptr].emplace_back(id);
+            shrink(v, ptr);
+        } else
+            shrink(v, id);
+    }
 }
-void init(graph &G) {
-  int n = G.n;
-  depth.assign(n, -1), id.assign(n, -1), low.resize(n);
-  for (int i = 0; i < n; i++)
-    if (depth[i] == -1) find_bridges(i, G);
+int main() {
+  for (int i = 1; i <= n; ++i) if (!in[i]) go(i);
+  vector <int> roots; ptr = 0;
+  for (int i = 1; i <= n; ++i) if (!compId[i]) {
+    roots.emplace_back(++ptr);
+    shrink(i, ptr);
+  }
 }

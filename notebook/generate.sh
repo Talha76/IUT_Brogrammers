@@ -4,4 +4,4 @@ pdflatex out.tex
 pdflatex out.tex
 mv out.pdf team-notebook.pdf 
 rm out*
-evince team-notebook.pdf
+zathura team-notebook.pdf

@@ -6,9 +6,9 @@ g++ -O2 -std=c++17 "$3".cpp -o $3
 # $3 is generator
 for ((i = 1;; i++)); do
   echo 'Test #'$i
-  timeout 5s ./$3 $RANDOM > in
-  timeout 5s ./$1 < in > out
-  timeout 5s ./$2 < in > ans
+  timeout 1s ./$3 $RANDOM > in
+  timeout 1s ./$1 < in > out
+  timeout 1s ./$2 < in > ans
   diff -i ans out > diff.out
   if [ $? -ne 0 ]; then
     cat in
